@@ -1,5 +1,5 @@
 ## A super simple capture-the-flag (s2CTF) playground
-These are simple in-class examples of stack buffer overflow attacks and a shellcode injection attack for UIC CS 487.
+These are simple in-class examples of stack buffer overflow attacks, shellcode injection, and code reuse (e.g., ret2libc) attacks for UIC CS 487.
 The code has been tested on **Ubuntu 22.04**.
 
 ### Setup the environment
