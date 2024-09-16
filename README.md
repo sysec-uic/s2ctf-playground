@@ -1,9 +1,12 @@
 ## A super simple capture-the-flag (s2CTF) playground
 These are simple in-class examples of stack buffer overflow attacks and a shellcode injection attack for UIC CS 487.
+The code has been tested on **Ubuntu 22.04**.
 
 ### Setup the environment
 ```
+sudo apt install gcc gcc-multilib make git
 git clone https://github.com/sysec-uic/s2ctf-playground.git
+cd s2ctf-playground
 ./setup.sh
 ```
 You should have `stack0x01`, ..., `stack0x04` under `ctf/`:
@@ -26,9 +29,10 @@ total 16
 -r-------- 1 level1 level1 9 Sep 11 22:14 key1
 ```
 ### Goal
-You need to exploit the buffer overflow vulnerability to get the keys. An example of providing the payload:
+You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. An example of providing the payload:
 ```
-./stack0x01 [payload]
+$ ./stack0x01 [payload]
+NWOB3tdw
 ```
 
 ### Clean up the environment
