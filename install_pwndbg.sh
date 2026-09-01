@@ -64,12 +64,15 @@ sudo chmod -R go-w "$PWNDBG_DIR"
 sudo chmod -R a+rX "$PWNDBG_DIR"
 
 # --- 5. Enable pwndbg for ALL users via the system-wide gdbinit ------------
-# We write a managed block containing two lines:
-#   1) Disable pwndbg's runtime auto-update. This is a SHARED, read-only install
+# We write a managed block containing:
+#   1) `set debuginfod enabled off`. Ubuntu's gdb auto-fetches debug info and
+#      source from a remote debuginfod server; on an offline/firewalled CTF box
+#      every lookup hangs until it times out ("Download failed: Timer expired").
+#   2) Disable pwndbg's runtime auto-update. This is a SHARED, read-only install
 #      (students cannot write /opt/pwndbg), so a user session must never try to
 #      self-update -- it would fail with "Permission denied". The admin updates
 #      manually by re-running this script (git pull + setup.sh) as root.
-#   2) Source pwndbg itself.
+#   3) Source pwndbg itself.
 sudo mkdir -p "$(dirname "$SYSTEM_GDBINIT")"
 sudo touch "$SYSTEM_GDBINIT"
 
@@ -77,13 +80,15 @@ sudo touch "$SYSTEM_GDBINIT"
 # so re-running this script stays idempotent.
 sudo sed -i '/# >>> pwndbg (managed by install_pwndbg.sh) >>>/,/# <<< pwndbg <<</d' "$SYSTEM_GDBINIT"
 sudo sed -i "\#^${SOURCE_LINE}\$#d" "$SYSTEM_GDBINIT"
+sudo sed -i '\#^set debuginfod enabled off$#d' "$SYSTEM_GDBINIT"
 sudo tee -a "$SYSTEM_GDBINIT" > /dev/null <<EOF
 # >>> pwndbg (managed by install_pwndbg.sh) >>>
+set debuginfod enabled off
 python import os; os.environ.setdefault("PWNDBG_NO_AUTOUPDATE", "1")
 $SOURCE_LINE
 # <<< pwndbg <<<
 EOF
-echo "[*] Enabled pwndbg (auto-update disabled) in $SYSTEM_GDBINIT."
+echo "[*] Enabled pwndbg (auto-update + debuginfod disabled) in $SYSTEM_GDBINIT."
 
 echo "[+] Done. Every user's 'gdb' now loads pwndbg automatically."
 echo "    Verify as any student (e.g. su - dbaxter2):  echo quit | gdb"
