@@ -64,15 +64,30 @@ sudo chmod -R go-w "$PWNDBG_DIR"
 sudo chmod -R a+rX "$PWNDBG_DIR"
 
 # --- 5. Enable pwndbg for ALL users via the system-wide gdbinit ------------
+# We write a managed block containing two lines:
+#   1) Disable pwndbg's runtime auto-update. This is a SHARED, read-only install
+#      (students cannot write /opt/pwndbg), so a user session must never try to
+#      self-update -- it would fail with "Permission denied". The admin updates
+#      manually by re-running this script (git pull + setup.sh) as root.
+#   2) Source pwndbg itself.
 sudo mkdir -p "$(dirname "$SYSTEM_GDBINIT")"
 sudo touch "$SYSTEM_GDBINIT"
-if sudo grep -qxF "$SOURCE_LINE" "$SYSTEM_GDBINIT"; then
-  echo "[*] $SYSTEM_GDBINIT already sources pwndbg."
-else
-  echo "$SOURCE_LINE" | sudo tee -a "$SYSTEM_GDBINIT" > /dev/null
-  echo "[*] Added pwndbg to $SYSTEM_GDBINIT."
-fi
+
+# Remove any prior managed block and any bare pwndbg source line, then re-add,
+# so re-running this script stays idempotent.
+sudo sed -i '/# >>> pwndbg (managed by install_pwndbg.sh) >>>/,/# <<< pwndbg <<</d' "$SYSTEM_GDBINIT"
+sudo sed -i "\#^${SOURCE_LINE}\$#d" "$SYSTEM_GDBINIT"
+sudo tee -a "$SYSTEM_GDBINIT" > /dev/null <<EOF
+# >>> pwndbg (managed by install_pwndbg.sh) >>>
+python import os; os.environ.setdefault("PWNDBG_NO_AUTOUPDATE", "1")
+$SOURCE_LINE
+# <<< pwndbg <<<
+EOF
+echo "[*] Enabled pwndbg (auto-update disabled) in $SYSTEM_GDBINIT."
 
 echo "[+] Done. Every user's 'gdb' now loads pwndbg automatically."
 echo "    Verify as any student (e.g. su - dbaxter2):  echo quit | gdb"
 echo "    You should see the pwndbg banner instead of the plain gdb prompt."
+echo
+echo "    To UPDATE pwndbg later, just re-run this script as an admin:"
+echo "      ./install_pwndbg.sh   (git pull + setup.sh + re-lock, all as root)"

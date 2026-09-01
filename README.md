@@ -58,9 +58,15 @@ the system-wide GDB init file, so every user (current and future) gets it:
 ./install_pwndbg.sh
 ```
 This clones pwndbg to `/opt/pwndbg` (root-owned, world-readable) and adds a
-`source /opt/pwndbg/gdbinit.py` line to the system gdbinit. Keep `/opt/pwndbg`
-non-writable by students: that code runs inside every user's `gdb` (including
-root's under `sudo gdb`).
+guarded `source /opt/pwndbg/gdbinit.py` block to the system gdbinit. Keep
+`/opt/pwndbg` non-writable by students: that code runs inside every user's `gdb`
+(including root's under `sudo gdb`).
+
+Because the shared install is read-only for students, pwndbg's runtime
+auto-update is disabled (`PWNDBG_NO_AUTOUPDATE=1`) in that config -- otherwise a
+student's `gdb` would try to rewrite `/opt/pwndbg` and fail with a permission
+error. To update pwndbg later, just re-run `./install_pwndbg.sh` as an admin
+(it does `git pull` + `setup.sh` + re-lock, all as root).
 
 ### Goal
 You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. Students run the challenges from `/ctf`; an example of providing the payload:
