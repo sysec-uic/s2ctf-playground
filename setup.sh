@@ -38,4 +38,18 @@ done
 
 make -C ctf clean; make -C ctf CTF=1
 
+# Install the built Set-UID binaries into the shared /ctf directory so every
+# student can run them from one canonical place. Each binary stays owned by its
+# matching level user with the setuid bit set (-rwsr-xr-x); it is not writable
+# by students, so the challenge binaries cannot be tampered with.
+for i in $(seq 1 4); do
+  binary="stack0x0$i"
+  # Copy + set ownership first, then set the setuid bit as a separate step.
+  # (Setting owner clears setuid, and some `install` variants apply -o after
+  # -m, so we must chmod u+s last to reliably keep -rwsr-xr-x.)
+  sudo install -m 755 -o "level$i" -g "level$i" "ctf/$binary" "/ctf/$binary"
+  sudo chmod u+s "/ctf/$binary"
+  echo "Installed /ctf/$binary (setuid level$i)"
+done
+
 echo "CTF environment setup completed."

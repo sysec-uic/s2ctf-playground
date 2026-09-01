@@ -1,0 +1,7 @@
+# Compiled challenge binaries and build artifacts produced by `make` in ctf/
+ctf/stack0x01
+ctf/stack0x02
+ctf/stack0x03
+ctf/stack0x04
+ctf/*.o
+ctf/*-dbg

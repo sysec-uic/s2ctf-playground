@@ -19,18 +19,41 @@ total 96
 -rwsrwxr-x 1 level1 level1 16488 Sep 11 22:14 stack0x01
 ... ...
 ```
-And key files `/ctf/key1`, ..., `/ctf/key4` under `/ctf` directory:
+The setup also installs the Set-UID binaries and their key files into the shared
+`/ctf` directory, so every student can run the challenges from one place:
 ```
 $ ls /ctf -lt 
-total 16
--r-------- 1 level4 level4 9 Sep 11 22:14 key4
--r-------- 1 level3 level3 9 Sep 11 22:14 key3
--r-------- 1 level2 level2 9 Sep 11 22:14 key2
--r-------- 1 level1 level1 9 Sep 11 22:14 key1
+total 80
+-rwsr-xr-x 1 level4 level4 16320 Sep 11 22:14 stack0x04
+-rwsr-xr-x 1 level3 level3 16588 Sep 11 22:14 stack0x03
+-rwsr-xr-x 1 level2 level2 16624 Sep 11 22:14 stack0x02
+-rwsr-xr-x 1 level1 level1 16488 Sep 11 22:14 stack0x01
+-r-------- 1 level4 level4     9 Sep 11 22:14 key4
+-r-------- 1 level3 level3     9 Sep 11 22:14 key3
+-r-------- 1 level2 level2     9 Sep 11 22:14 key2
+-r-------- 1 level1 level1     9 Sep 11 22:14 key1
 ```
+
+### Add student accounts
+Paste the usernames and SSH public keys from the Google Form into `users.md`
+(one student per line: `username` then the `ssh-... key comment`, separated by a
+TAB or spaces), then:
+```
+./add_users.sh users.md
+```
+This creates a password-disabled (SSH-key-only) account for each student and
+installs their public key into `~/.ssh/authorized_keys`. It is safe to re-run as
+more responses come in.
+
+To remove those student accounts (and their home directories) later:
+```
+./del_users.sh users.md
+```
+
 ### Goal
-You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. An example of providing the payload:
+You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. Students run the challenges from `/ctf`; an example of providing the payload:
 ```
+$ cd /ctf
 $ ./stack0x01 [payload]
 NWOB3tdw
 ```
