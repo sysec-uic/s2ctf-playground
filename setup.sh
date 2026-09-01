@@ -56,9 +56,11 @@ for i in $(seq 1 4); do
   # -m, so we must chmod u+s last to reliably keep -rwsr-xr-x.)
   sudo install -m 755 -o "level$i" -g "level$i" "ctf/$binary" "/vulcode/$binary"
   sudo chmod u+s "/vulcode/$binary"
-  # Install the matching source code next to the binary (read-only).
-  sudo install -m 644 -o root -g root "ctf/vul$i.c" "/vulcode/$binary.c"
-  echo "Installed /vulcode/$binary (setuid level$i) and /vulcode/$binary.c"
+  # Install the matching source code next to the binary (read-only). Keep the
+  # original vulN.c name so it matches the path recorded in the binary's debug
+  # info (-fdebug-prefix-map=.../vulcode), letting gdb show source to all users.
+  sudo install -m 644 -o root -g root "ctf/vul$i.c" "/vulcode/vul$i.c"
+  echo "Installed /vulcode/$binary (setuid level$i) and /vulcode/vul$i.c"
 done
 
 echo "CTF environment setup completed."

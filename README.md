@@ -21,7 +21,7 @@ total 96
 ```
 The setup installs the Set-UID binaries and their source code into the shared
 `/vulcode` directory, so every student can run and read the challenges from one
-place:
+place (`stack0x0N` is built from `vulN.c`):
 ```
 $ ls /vulcode -lt 
 total 96
@@ -29,11 +29,13 @@ total 96
 -rwsr-xr-x 1 level3 level3 16588 Sep 11 22:14 stack0x03
 -rwsr-xr-x 1 level2 level2 16624 Sep 11 22:14 stack0x02
 -rwsr-xr-x 1 level1 level1 16488 Sep 11 22:14 stack0x01
--rw-r--r-- 1 root   root     420 Sep 11 22:14 stack0x04.c
--rw-r--r-- 1 root   root     512 Sep 11 22:14 stack0x03.c
--rw-r--r-- 1 root   root     540 Sep 11 22:14 stack0x02.c
--rw-r--r-- 1 root   root     480 Sep 11 22:14 stack0x01.c
+-rw-r--r-- 1 root   root     420 Sep 11 22:14 vul4.c
+-rw-r--r-- 1 root   root     512 Sep 11 22:14 vul3.c
+-rw-r--r-- 1 root   root     540 Sep 11 22:14 vul2.c
+-rw-r--r-- 1 root   root     480 Sep 11 22:14 vul1.c
 ```
+The binaries are built with `-fdebug-prefix-map=.../vulcode`, so `gdb` finds the
+source at `/vulcode/vulN.c` and shows source-level debugging for every user.
 The flag files stay under `/ctf`, each owned by its level user and readable only
 through the corresponding Set-UID binary:
 ```

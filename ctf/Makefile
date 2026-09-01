@@ -1,4 +1,7 @@
-FLAGS    = -z execstack -fno-stack-protector -g
+# -fdebug-prefix-map rewrites the source path stored in the debug info from the
+# build directory to /vulcode, where setup.sh installs the sources. That lets
+# every user's gdb find the source there (no local build tree, no debuginfod).
+FLAGS    = -z execstack -fno-stack-protector -g -fdebug-prefix-map=$(CURDIR)=/vulcode
 FLAGS_32 = -m32
 FLAGS_NOPIE = -no-pie -fno-pic
 TARGET   = stack0x01 stack0x02 stack0x03 stack0x04
