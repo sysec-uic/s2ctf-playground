@@ -49,8 +49,11 @@ fi
 # --- 3. Build pwndbg's self-contained environment --------------------------
 # setup.sh creates a venv matching GDB's embedded Python and installs all
 # dependencies into it; gdbinit.py injects that venv onto gdb's sys.path.
+# NOTE: pwndbg's setup.sh (via `uv`) resolves dependencies from the
+# pyproject.toml in the CURRENT directory, so it must run with its CWD set to
+# the pwndbg checkout -- otherwise it fails with "No pyproject.toml found".
 echo "[*] Running pwndbg setup (pulls dependencies; needs network)..."
-sudo "$PWNDBG_DIR/setup.sh"
+( cd "$PWNDBG_DIR" && sudo ./setup.sh )
 
 # --- 4. Lock down permissions (SECURITY) -----------------------------------
 # This code runs inside EVERY user's gdb -- including root's when you use
