@@ -50,6 +50,18 @@ To remove those student accounts (and their home directories) later:
 ./del_users.sh users.md
 ```
 
+### Install pwndbg for all users
+pwndbg is a GDB plugin, so it only needs to be installed once. Rather than
+installing it per student, install it into a shared location and enable it in
+the system-wide GDB init file, so every user (current and future) gets it:
+```
+./install_pwndbg.sh
+```
+This clones pwndbg to `/opt/pwndbg` (root-owned, world-readable) and adds a
+`source /opt/pwndbg/gdbinit.py` line to the system gdbinit. Keep `/opt/pwndbg`
+non-writable by students: that code runs inside every user's `gdb` (including
+root's under `sudo gdb`).
+
 ### Goal
 You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. Students run the challenges from `/ctf`; an example of providing the payload:
 ```
