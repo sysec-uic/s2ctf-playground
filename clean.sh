@@ -11,10 +11,10 @@ for i in $(seq 1 4); do
   echo "Deleted user $username"
 done
 
-# Remove the /ctf directory and everything in it: the key files AND the
-# installed Set-UID challenge binaries (stack0x01..stack0x04).
-sudo rm -rf /ctf
+# Remove the /ctf directory (flag files key1..key4) and the /vulcode directory
+# (installed Set-UID binaries stack0x01..stack0x04 and their source code).
+sudo rm -rf /ctf /vulcode
 
 make -C ctf clean
 
-echo "/ctf directory removed (keys and installed stack0x0* binaries)"
+echo "/ctf (flags) and /vulcode (binaries + source) removed"

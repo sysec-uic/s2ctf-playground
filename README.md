@@ -19,19 +19,30 @@ total 96
 -rwsrwxr-x 1 level1 level1 16488 Sep 11 22:14 stack0x01
 ... ...
 ```
-The setup also installs the Set-UID binaries and their key files into the shared
-`/ctf` directory, so every student can run the challenges from one place:
+The setup installs the Set-UID binaries and their source code into the shared
+`/vulcode` directory, so every student can run and read the challenges from one
+place:
 ```
-$ ls /ctf -lt 
-total 80
+$ ls /vulcode -lt 
+total 96
 -rwsr-xr-x 1 level4 level4 16320 Sep 11 22:14 stack0x04
 -rwsr-xr-x 1 level3 level3 16588 Sep 11 22:14 stack0x03
 -rwsr-xr-x 1 level2 level2 16624 Sep 11 22:14 stack0x02
 -rwsr-xr-x 1 level1 level1 16488 Sep 11 22:14 stack0x01
--r-------- 1 level4 level4     9 Sep 11 22:14 key4
--r-------- 1 level3 level3     9 Sep 11 22:14 key3
--r-------- 1 level2 level2     9 Sep 11 22:14 key2
--r-------- 1 level1 level1     9 Sep 11 22:14 key1
+-rw-r--r-- 1 root   root     420 Sep 11 22:14 stack0x04.c
+-rw-r--r-- 1 root   root     512 Sep 11 22:14 stack0x03.c
+-rw-r--r-- 1 root   root     540 Sep 11 22:14 stack0x02.c
+-rw-r--r-- 1 root   root     480 Sep 11 22:14 stack0x01.c
+```
+The flag files stay under `/ctf`, each owned by its level user and readable only
+through the corresponding Set-UID binary:
+```
+$ ls /ctf -lt 
+total 16
+-r-------- 1 level4 level4 9 Sep 11 22:14 key4
+-r-------- 1 level3 level3 9 Sep 11 22:14 key3
+-r-------- 1 level2 level2 9 Sep 11 22:14 key2
+-r-------- 1 level1 level1 9 Sep 11 22:14 key1
 ```
 
 ### Add student accounts
@@ -69,9 +80,9 @@ error. To update pwndbg later, just re-run `./install_pwndbg.sh` as an admin
 (it does `git pull` + `setup.sh` + re-lock, all as root).
 
 ### Goal
-You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys. Students run the challenges from `/ctf`; an example of providing the payload:
+You need to exploit the buffer overflow vulnerability of the Set-UID programs to get the keys (the flag files under `/ctf`). Students run the challenges from `/vulcode` (where the source is also available to read); an example of providing the payload:
 ```
-$ cd /ctf
+$ cd /vulcode
 $ ./stack0x01 [payload]
 NWOB3tdw
 ```
